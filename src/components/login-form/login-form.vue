@@ -15,7 +15,7 @@
       </Input>
     </FormItem>
     <FormItem>
-      <Button @click="handleSubmit" type="primary" long>登录</Button>
+      <Button @click="handleSubmit" :loading="loading" type="primary" long>登录</Button>
     </FormItem>
   </Form>
 </template>
@@ -23,6 +23,10 @@
 export default {
   name: 'LoginForm',
   props: {
+    loading: {
+      type: Boolean,
+      default: false
+    },
     userNameRules: {
       type: Array,
       default: () => {
@@ -43,8 +47,8 @@ export default {
   data () {
     return {
       form: {
-        userName: 'super_admin',
-        password: ''
+        userName: 'XiaoBingBy',
+        password: '123456'
       }
     }
   },
