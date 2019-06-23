@@ -12,9 +12,37 @@ export const login = ({ userName, password }) => {
   })
 }
 
+export const newLogin = ({ userName, password }) => {
+  const data = {
+    username: userName,
+    password: password,
+    grant_type: 'password',
+    scope: 'app'
+  }
+  console.log(data)
+  return axios.request({
+    url: '/auth/oauth/token',
+    headers: {
+      'Authorization': 'Basic YXBwOlhjV2ViQXBw'
+    },
+    params: data,
+    method: 'post'
+  })
+}
+
 export const getUserInfo = (token) => {
   return axios.request({
     url: 'get_info',
+    params: {
+      token
+    },
+    method: 'get'
+  })
+}
+
+export const newGetUserInfo = (token) => {
+  return axios.request({
+    url: '/upms/user/getUserInfo',
     params: {
       token
     },
@@ -31,7 +59,7 @@ export const logout = (token) => {
 
 export const getUnreadCount = () => {
   return axios.request({
-    url: 'message/count',
+    url: '/upms/message/count',
     method: 'get'
   })
 }
