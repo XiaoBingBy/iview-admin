@@ -30,15 +30,31 @@ export default {
   methods: {
     ...mapActions([
       'handleLogin',
-      'getUserInfo'
+      'getUserInfo',
+      'getRoutersConfig'
     ]),
     handleSubmit ({ userName, password }) {
+      const _this = this;
       this.loading = true
       this.handleLogin({ userName, password }).then(res => {
         this.loading = false
         let { code } = res
         if (code === 200) {
-          this.$Message.success('登录成功')
+          //this.$Message.success('登录成功')
+          _this.$Message.loading({
+            content: '登录系统中...',
+            duration: 1.5,
+            onClose: function() {
+              _this.loading = false;
+              Promise.all([_this.getRoutersConfig()]).then(res => {
+                // 注册新路由配置
+                _this.$router.addRoutes(res[0])
+                _this.$router.push({
+                  name: 'home'
+                })
+              });
+            },
+          });
         }
         this.getUserInfo().then(res => {
           this.$router.push({
