@@ -12,10 +12,12 @@ export const login = ({ userName, password }) => {
   })
 }
 
-export const newLogin = ({ userName, password }) => {
+export const newLogin = ({ userName, password, code, randomNumber }) => {
   const data = {
     username: userName,
     password: password,
+    code: code,
+    randomNumber: randomNumber,
     grant_type: 'password',
     scope: 'app'
   }

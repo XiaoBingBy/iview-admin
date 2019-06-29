@@ -33,10 +33,10 @@ export default {
       'getUserInfo',
       'getRoutersConfig'
     ]),
-    handleSubmit ({ userName, password }) {
+    handleSubmit ({ userName, password, code, randomNumber }) {
       const _this = this;
       this.loading = true
-      this.handleLogin({ userName, password }).then(res => {
+      this.handleLogin({ userName, password, code, randomNumber }).then(res => {
         this.loading = false
         let { code } = res
         if (code === 200) {
@@ -66,7 +66,6 @@ export default {
         })
       }).catch(() => {
         this.loading = false
-        this.$Message.warning('连接服务器失败')
       })
     }
   }
