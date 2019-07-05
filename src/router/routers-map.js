@@ -13,6 +13,9 @@ const user = () => import('@/view/upms/user/user.vue')
 const role = () => import('@/view/upms/role/role.vue')
 const permission = () => import('@/view/upms/permission/permission.vue')
 const dict = () => import('@/view/upms/dict/dict.vue')
+const vipUser = () => import('@/view/rysuan/user/user.vue')
+const product = () => import('@/view/rysuan/product/product.vue')
+const city = () => import('@/view/rysuan/city/city.vue')
 
 
 export const routerMap = {
@@ -29,7 +32,10 @@ export const routerMap = {
   user,
   role,
   permission,
-  dict
+  dict,
+  vipUser,
+  product,
+  city
 }
 
 export const staticRouters = [
@@ -65,6 +71,35 @@ export const staticRouters = [
       }
     ]
   },
+  // {
+  //   path: '/admin/rysuan/product',
+  //   name: 'rysuan-product',
+  //   meta: {
+  //     icon: 'md-settings',
+  //     title: '产品中心'
+  //   },
+  //   component: Main,
+  //   children: [
+  //     {
+  //       path: 'product',
+  //       name: 'product',
+  //       meta: {
+  //         icon: 'md-person',
+  //         title: '用户产品'
+  //       },
+  //       component: () => import('@/view/rysuan/product/product.vue')
+  //     },
+  //     {
+  //       path: 'city',
+  //       name: 'city',
+  //       meta: {
+  //         icon: 'md-person',
+  //         title: '城市管理'
+  //       },
+  //       component: () => import('@/view/rysuan/city/city.vue')
+  //     }
+  //   ]
+  // },
   // {
   //   path: '/admin/upms',
   //   name: 'upms',
