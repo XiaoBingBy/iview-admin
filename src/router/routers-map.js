@@ -13,10 +13,6 @@ const user = () => import('@/view/upms/user/user.vue')
 const role = () => import('@/view/upms/role/role.vue')
 const permission = () => import('@/view/upms/permission/permission.vue')
 const dict = () => import('@/view/upms/dict/dict.vue')
-const vipUser = () => import('@/view/rysuan/user/user.vue')
-const product = () => import('@/view/rysuan/product/product.vue')
-const city = () => import('@/view/rysuan/city/city.vue')
-
 
 export const routerMap = {
   Main,
@@ -32,10 +28,7 @@ export const routerMap = {
   user,
   role,
   permission,
-  dict,
-  vipUser,
-  product,
-  city
+  dict
 }
 
 export const staticRouters = [
@@ -68,6 +61,46 @@ export const staticRouters = [
           icon: 'md-home'
         },
         component: routerMap['Home']
+      }
+    ]
+  },
+  {
+    path: '/error_store',
+    name: 'error_store',
+    meta: {
+      hideInBread: true,
+      hideInMenu: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'error_store_page',
+        name: 'error_store_page',
+        meta: {
+          icon: 'ios-bug',
+          title: '错误收集'
+        },
+        component: () => import('@/view/error-store/error-store.vue')
+      }
+    ]
+  },
+  {
+    path: '/error_logger',
+    name: 'error_logger',
+    meta: {
+      hideInBread: true,
+      hideInMenu: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'error_logger_page',
+        name: 'error_logger_page',
+        meta: {
+          icon: 'ios-bug',
+          title: '错误收集'
+        },
+        component: () => import('@/view/single-page/error-logger.vue')
       }
     ]
   },
