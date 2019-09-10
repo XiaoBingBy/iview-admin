@@ -77,299 +77,297 @@
 import { getUserList, apiAddUser, apiUpdateUser, apiUserRolesInfo, apiDeleteUser } from '@/api/upms/user'
 import { apiQueryRole } from '@/api/upms/role'
 
-  export default {
-    name: "user",
-    data() {
-      return {
-        view: {
-          showAddOrUpdateModal: false,
-          addOrUpdateTitle: '',
-          isAddOrUpdate: false,
-          selectRemoteMethodLoading: true
-        },
-        filter: {
-          querys: [
-            {
-              column: 'username',
-              type: 'eq',
-              value: ''
-            },
-            {
-              column: 'nickname',
-              type: 'eq',
-              value: ''
-            }
-          ],
-          current: 1,
-          pageSize: 10
-        },
-        table: {
-          loading: false,
-          total: 0,
-          data: [],
-          selectionData: [],
-          columns: [
-            {
-              type: 'selection',
-              width: 60,
-              align: 'center'
-            },
-            {
-              title: 'ID',
-              width: 170,
-              key: 'id',
-              align: 'center'
-            },
-            {
-              title: '用户名',
-              key: 'username',
-              width: 150,
-              align: 'center'
-            },
-            {
-              title: '昵称',
-              key: 'nickname',
-              width: 150,
-              align: 'center'
-            },
-            {
-              title: '手机号',
-              key: 'phone',
-              width: 150,
-              align: 'center'
-            },
-            {
-              title: '邮箱',
-              key: 'email',
-              width: 150,
-              align: 'center'
-            },
-            {
-              title: '状态',
-              key: 'status',
-              width: 100,
-              align: 'center',
-              render: (h, params) => {
-                if (params.row.status === 0) {
-                  return h('div', [
-                    h('tag', {
-                      props: {
-                        color: 'warning'
-                      }
-                    }, '禁用')
-                  ])
-                } else if (params.row.status === 1) {
-                  return h('div', [
-                    h('tag', {
-                      props: {
-                        color: 'success'
-                      }
-                    }, '正常')
-                  ])
-                }
-              }
-            },
-            {
-              title: '创建时间',
-              key: 'createTime',
-              width: 150,
-              align: 'center'
-            },
-            {
-              title: '操作',
-              key: 'action',
-              align: 'center',
-              fixed: 'right',
-              width: 130,
-              render: (h, params) => {
+export default {
+  name: 'user',
+  data () {
+    return {
+      view: {
+        showAddOrUpdateModal: false,
+        addOrUpdateTitle: '',
+        isAddOrUpdate: false,
+        selectRemoteMethodLoading: true
+      },
+      filter: {
+        querys: [
+          {
+            column: 'username',
+            type: 'eq',
+            value: ''
+          },
+          {
+            column: 'nickname',
+            type: 'eq',
+            value: ''
+          }
+        ],
+        current: 1,
+        pageSize: 10
+      },
+      table: {
+        loading: false,
+        total: 0,
+        data: [],
+        selectionData: [],
+        columns: [
+          {
+            type: 'selection',
+            width: 60,
+            align: 'center'
+          },
+          {
+            title: 'ID',
+            width: 170,
+            key: 'id',
+            align: 'center'
+          },
+          {
+            title: '用户名',
+            key: 'username',
+            align: 'center'
+          },
+          {
+            title: '昵称',
+            key: 'nickname',
+            align: 'center'
+          },
+          {
+            title: '手机号',
+            key: 'phone',
+            width: 150,
+            align: 'center'
+          },
+          {
+            title: '邮箱',
+            key: 'email',
+            width: 150,
+            align: 'center'
+          },
+          {
+            title: '状态',
+            key: 'status',
+            width: 100,
+            align: 'center',
+            render: (h, params) => {
+              if (params.row.status === 0) {
                 return h('div', [
-                  h(
-                    'Button',
-                    {
-                      props: {
-                        size: 'small'
-                      },
-                      style: {
-                        marginRight: '5px'
-                      },
-                      on: {
-                        click: () => {
-                          this.updateUser(params.row)
-                        }
-                      }
-                    },
-                    '修改'
-                  ),
-                  h(
-                    'Button',
-                    {
-                      props: {
-                        type: 'error',
-                        size: 'small'
-                      },
-                      on: {
-                        click: () => {
-                          this.deletOneUser(params.row)
-                          console.log(params.row)
-                        }
-                      }
-                    },
-                    '删除'
-                  )
+                  h('tag', {
+                    props: {
+                      color: 'warning'
+                    }
+                  }, '禁用')
+                ])
+              } else if (params.row.status === 1) {
+                return h('div', [
+                  h('tag', {
+                    props: {
+                      color: 'success'
+                    }
+                  }, '正常')
                 ])
               }
             }
-          ]
-        },
-        addOrUpdateUserDto: {
-        },
-        selectRoleDto: [],
-        userRuleValidate: {
-          username: [
-            { required: true, message: '请输入用户名', trigger: 'blur' }
-          ],
-          nickname: [
-            { required: true, message: '请输入昵称', trigger: 'blur' }
-          ],
-          phone: [
-            { required: true, message: '请输入手机号', trigger: 'blur' }
-          ],
-          email: [
-            { required: true, message: '请输入邮箱', trigger: 'blur' }
-          ]
-        }
-      }
-    },
-    mounted() {
-      this.init()
-    },
-    methods: {
-      init() {
-        this.getList()
-      },
-      handleSearch () {
-        this.getList()
-      },
-      handleReset () {
-        this.filter.querys[0].value = ''
-        this.filter.querys[1].value = ''
-      },
-      getList () {
-        this.table.loading = true
-        getUserList(this.filter).then(res => {
-          this.filter.current = res.data.current
-          this.filter.pageSize = res.data.size
-          this.table.data = res.data.records
-          this.table.total = res.data.total
-          this.table.loading = false
-        })
-      },
-      onSelectionChange(e) {
-        this.table.selectionData = e
-      },
-      onChange (current) {
-        this.filter.current = current
-        this.getList()
-      },
-      onPageSizeChange (pageSize) {
-        this.filter.pageSize = pageSize
-        this.getList()
-      },
-      async addUser() {
-        this.view.addOrUpdateTitle = '添加用户'
-        this.$refs.addOrUpdateFormRef.resetFields();
-        this.addOrUpdateUserDto = {
-          username: '',
-          nickname: '',
-          phone: '',
-          email: '',
-          status: 1,
-          roleIds: []
-        };
-        await this.getApiQueryRole()
-        this.view.isAddOrUpdate = true
-        this.view.showAddOrUpdateModal = true
-      },
-      async updateUser (row) {
-        this.view.addOrUpdateTitle = '修改用户'
-        this.$refs.addOrUpdateFormRef.resetFields();
-        await this.getApiQueryRole()
-        // 调用接口查询数据
-        await apiUserRolesInfo(row.id).then(res => {
-          let { id, username, nickname, phone, email, status, roleIds } = res.data
-          this.addOrUpdateUserDto = { id, username, nickname, phone, email, status, roleIds }
-          this.view.isAddOrUpdate = false
-          this.view.showAddOrUpdateModal = true
-        })
-      },
-      onOk() {
-        this.$refs.addOrUpdateFormRef.validate(valid => {
-          if (valid) {
-            if (this.view.isAddOrUpdate) {
-              apiAddUser(this.addOrUpdateUserDto).then(res => {
-                this.$Message.success('添加成功')
-                this.view.showAddOrUpdateModal = false
-                this.getList()
-              })
-            } else {
-              apiUpdateUser(this.addOrUpdateUserDto).then(res => {
-                this.$Message.success('修改成功')
-                this.view.showAddOrUpdateModal = false
-                this.getList()
-              })
+          },
+          {
+            title: '创建时间',
+            key: 'createTime',
+            width: 150,
+            align: 'center'
+          },
+          {
+            title: '操作',
+            key: 'action',
+            align: 'center',
+            fixed: 'right',
+            width: 130,
+            render: (h, params) => {
+              return h('div', [
+                h(
+                  'Button',
+                  {
+                    props: {
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.updateUser(params.row)
+                      }
+                    }
+                  },
+                  '修改'
+                ),
+                h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'error',
+                      size: 'small'
+                    },
+                    on: {
+                      click: () => {
+                        this.deletOneUser(params.row)
+                        console.log(params.row)
+                      }
+                    }
+                  },
+                  '删除'
+                )
+              ])
             }
+          }
+        ]
+      },
+      addOrUpdateUserDto: {
+      },
+      selectRoleDto: [],
+      userRuleValidate: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' }
+        ],
+        nickname: [
+          { required: true, message: '请输入昵称', trigger: 'blur' }
+        ],
+        phone: [
+          { required: true, message: '请输入手机号', trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' }
+        ]
+      }
+    }
+  },
+  mounted () {
+    this.init()
+  },
+  methods: {
+    init () {
+      this.getList()
+    },
+    handleSearch () {
+      this.getList()
+    },
+    handleReset () {
+      this.filter.querys[0].value = ''
+      this.filter.querys[1].value = ''
+    },
+    getList () {
+      this.table.loading = true
+      getUserList(this.filter).then(res => {
+        this.filter.current = res.data.current
+        this.filter.pageSize = res.data.size
+        this.table.data = res.data.records
+        this.table.total = res.data.total
+        this.table.loading = false
+      })
+    },
+    onSelectionChange (e) {
+      this.table.selectionData = e
+    },
+    onChange (current) {
+      this.filter.current = current
+      this.getList()
+    },
+    onPageSizeChange (pageSize) {
+      this.filter.pageSize = pageSize
+      this.getList()
+    },
+    async addUser () {
+      this.view.addOrUpdateTitle = '添加用户'
+      this.$refs.addOrUpdateFormRef.resetFields()
+      this.addOrUpdateUserDto = {
+        username: '',
+        nickname: '',
+        phone: '',
+        email: '',
+        status: 1,
+        roleIds: []
+      }
+      await this.getApiQueryRole()
+      this.view.isAddOrUpdate = true
+      this.view.showAddOrUpdateModal = true
+    },
+    async updateUser (row) {
+      this.view.addOrUpdateTitle = '修改用户'
+      this.$refs.addOrUpdateFormRef.resetFields()
+      await this.getApiQueryRole()
+      // 调用接口查询数据
+      await apiUserRolesInfo(row.id).then(res => {
+        let { id, username, nickname, phone, email, status, roleIds } = res.data
+        this.addOrUpdateUserDto = { id, username, nickname, phone, email, status, roleIds }
+        this.view.isAddOrUpdate = false
+        this.view.showAddOrUpdateModal = true
+      })
+    },
+    onOk () {
+      this.$refs.addOrUpdateFormRef.validate(valid => {
+        if (valid) {
+          if (this.view.isAddOrUpdate) {
+            apiAddUser(this.addOrUpdateUserDto).then(res => {
+              this.$Message.success('添加成功')
+              this.view.showAddOrUpdateModal = false
+              this.getList()
+            })
           } else {
-            this.$refs.addOrUpdateModal.buttonLoading = false
+            apiUpdateUser(this.addOrUpdateUserDto).then(res => {
+              this.$Message.success('修改成功')
+              this.view.showAddOrUpdateModal = false
+              this.getList()
+            })
           }
-        })
-      },
-      deleUser() {
-        if (this.table.selectionData.length <= 0) {
-          this.$Message.warning('请选择要删除的数据')
-          return
+        } else {
+          this.$refs.addOrUpdateModal.buttonLoading = false
         }
-        this.$Modal.confirm({
-          title: '确认删除',
-          content: '您确认要删除所选的 ' + this.table.selectionData.length + ' 条数据?',
-          onOk: () => {
-            let ids = ''
-            this.table.selectionData.forEach(function (e) {
-              ids += e.id + ','
-            })
-            ids = ids.substring(0, ids.length - 1)
-            apiDeleteUser(ids).then(res => {
-              this.$Message.success('删除成功')
-              this.init()
-            })
-          }
-        })
-      },
-      deletOneUser: function (row) {
-        this.$Modal.confirm({
-          title: '确认删除',
-          content: '您确认要删除用户' + row.username + ' ?',
-          onOk: () => {
-            let ids = ''
-            ids = row.id
-            apiDeleteUser(ids).then(res => {
-              this.$Message.success('删除成功')
-              this.init()
-            })
-          }
-        })
-      },
-      selectRemoteMethod: function (query) {
-        this.getApiQueryRole(query)
-      },
-      getApiQueryRole (roleName = '') {
-        this.view.selectRemoteMethodLoading = true
-        apiQueryRole(roleName).then(res => {
-          this.view.selectRemoteMethodLoading = false
-          this.selectRoleDto = res.data
-        })
-      },
+      })
+    },
+    deleUser () {
+      if (this.table.selectionData.length <= 0) {
+        this.$Message.warning('请选择要删除的数据')
+        return
+      }
+      this.$Modal.confirm({
+        title: '确认删除',
+        content: '您确认要删除所选的 ' + this.table.selectionData.length + ' 条数据?',
+        onOk: () => {
+          let ids = ''
+          this.table.selectionData.forEach(function (e) {
+            ids += e.id + ','
+          })
+          ids = ids.substring(0, ids.length - 1)
+          apiDeleteUser(ids).then(res => {
+            this.$Message.success('删除成功')
+            this.init()
+          })
+        }
+      })
+    },
+    deletOneUser: function (row) {
+      this.$Modal.confirm({
+        title: '确认删除',
+        content: '您确认要删除用户' + row.username + ' ?',
+        onOk: () => {
+          let ids = ''
+          ids = row.id
+          apiDeleteUser(ids).then(res => {
+            this.$Message.success('删除成功')
+            this.init()
+          })
+        }
+      })
+    },
+    selectRemoteMethod: function (query) {
+      this.getApiQueryRole(query)
+    },
+    getApiQueryRole (roleName = '') {
+      this.view.selectRemoteMethodLoading = true
+      apiQueryRole(roleName).then(res => {
+        this.view.selectRemoteMethodLoading = false
+        this.selectRoleDto = res.data
+      })
     }
   }
+}
 </script>
 
 <style scoped>

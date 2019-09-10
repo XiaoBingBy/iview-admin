@@ -115,7 +115,6 @@ export default {
           {
             title: '字典名',
             key: 'name',
-            width: 150,
             align: 'center'
           },
           {
@@ -127,13 +126,11 @@ export default {
           {
             title: '编码',
             key: 'code',
-            width: 150,
             align: 'center'
           },
           {
             title: '值',
             key: 'value',
-            width: 150,
             align: 'center'
           },
           {
@@ -283,7 +280,7 @@ export default {
         status: 1,
         description: ''
       }
-      this.$refs.addOrUpdateFormRef.resetFields();
+      this.$refs.addOrUpdateFormRef.resetFields()
       this.view.showAddOrUpdateModal = true
     },
     handleUpdateRole: function (row) {
@@ -291,7 +288,7 @@ export default {
       this.view.isAddOrUpdate = false
       let { id, name, type, code, value, sort, status, description } = row
       this.addOrUpdateDiscDto = { id, name, type, code, value, sort, status, description }
-      this.$refs.addOrUpdateFormRef.resetFields();
+      this.$refs.addOrUpdateFormRef.resetFields()
       this.view.showAddOrUpdateModal = true
     },
     onOk: function () {
